@@ -1,6 +1,6 @@
 FROM frekele/java:jdk8
 
-ENV ANT_VERSION=1.10.3
+ENV ANT_VERSION=1.10.7
 ENV ANT_HOME=/opt/ant
 
 # change to tmp folder
