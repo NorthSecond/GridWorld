@@ -234,11 +234,11 @@ public class MenuMaker<T>
         public Object makeDefaultValue(Class type)
         {
             if (type == int.class)
-                return new Integer(0);
+                return 0;
             else if (type == boolean.class)
                 return Boolean.FALSE;
             else if (type == double.class)
-                return new Double(0);
+                return (double) 0;
             else if (type == String.class)
                 return "";
             else if (type == Color.class)
