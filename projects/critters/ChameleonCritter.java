@@ -1,4 +1,4 @@
-/* 
+/*
  * AP(r) Computer Science GridWorld Case Study:
  * Copyright(c) 2005-2006 Cay S. Horstmann (http://horstmann.com)
  *
@@ -10,7 +10,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * @author Chris Nevison
  * @author Barbara Cloud Wells
  * @author Cay Horstmann
@@ -27,14 +27,12 @@ import java.util.ArrayList;
  * it moves through the grid. <br />
  * The implementation of this class is testable on the AP CS A and AB exams.
  */
-public class ChameleonCritter extends Critter
-{
+public class ChameleonCritter extends Critter {
     /**
      * Randomly selects a neighbor and changes this critter's color to be the
      * same as that neighbor's. If there are no neighbors, no action is taken.
      */
-    public void processActors(ArrayList<Actor> actors)
-    {
+    public void processActors(ArrayList<Actor> actors) {
         int n = actors.size();
         if (n == 0)
             return;
@@ -47,8 +45,7 @@ public class ChameleonCritter extends Critter
     /**
      * Turns towards the new location as it moves.
      */
-    public void makeMove(Location loc)
-    {
+    public void makeMove(Location loc) {
         setDirection(getLocation().getDirectionToward(loc));
         super.makeMove(loc);
     }

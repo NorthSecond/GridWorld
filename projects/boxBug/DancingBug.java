@@ -1,14 +1,23 @@
+/**
+ * @author: yangyf83
+ * @date: 2022-09-12
+ * @brief: the class of dancing bug in part 2.
+ * @version: 1.0
+ * @note: 2022-09-12: Add the code of the class.
+ * <br /> 2022-10-02: Finish the comments and docs.
+ */
+
+
 import info.gridworld.actor.Bug;
 
 /**
  * A <code>DancingBug</code> traces out a square "box" of a given size. <br />
  */
 public class DancingBug extends Bug {
-    private int steps;
-    private int sideLength;
-
     // the array of the number of turns when acting
     private final int[] turnArray;
+    private int steps;
+    private final int sideLength;
     // the times that the bug has acted.
     private int turnIndex;
 

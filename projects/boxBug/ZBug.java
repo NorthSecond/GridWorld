@@ -1,3 +1,12 @@
+/**
+ * @author: yangyf83
+ * @date: 2022-09-12
+ * @brief: the class of 'Z' bug in part 2.
+ * @version: 1.0
+ * @note: 2022-09-12: Add the code of the class.
+ * <br /> 2022-10-02: Finish the comments and docs.
+ */
+
 import info.gridworld.actor.Bug;
 
 /**
@@ -5,7 +14,7 @@ import info.gridworld.actor.Bug;
  */
 public class ZBug extends Bug {
     private int steps;
-    private int sideLength;
+    private final int sideLength;
 
     private boolean flag;
 
@@ -28,8 +37,8 @@ public class ZBug extends Bug {
         if (steps < sideLength && canMove()) {
             move();
             steps++;
-        } else if (steps == sideLength){
-            if(flag) {
+        } else if (steps == sideLength) {
+            if (flag) {
                 return;
             } else if (this.getDirection() == 90) {
                 this.setDirection(225);
