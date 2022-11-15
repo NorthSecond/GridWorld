@@ -913,7 +913,7 @@ public class KingCrab extends CrabCritter {
 ### Part 5
 #### Exercises
 
-##### S
+##### SparseBoundedGrid
 
 1.假设一个程序需要一个非常大的有界网格，它包含很少的对象，并且程序经常调用getOccupiedLocations方法（例如，ActorWorld）。创建一个使用“稀疏数组”实现的SparseBoundedGrid类。您的解决方案不需要是一个通用类；您可以只需存储Object类型的使用者。
 
