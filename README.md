@@ -16,6 +16,19 @@
             * 讨论与设计
             * Jumper
             * Test
+    * Part 4
+        * Exercises 4
+            * prosessActors
+            * ChameleonKid
+            * RockHound
+            * BlusterCritter
+            * QuickCrab
+            * KingCrab
+    * Part 5
+        * Exercises 5
+            * SparseBoundedGrid
+            * UnboundedGrid
+            * 比较get与put方法的效率
   
 ---
 
@@ -600,3 +613,524 @@ public class JumperTest {
 
 
 ```
+
+### Part 4
+#### Exercises
+
+##### processActors
+
+1.完善ChameleonCritter类中的processActors方法，使要处理的actors列表为空的话，ChameleonCritter的颜色会想flower一样变暗。
+
+**代码传送门：**  [ChameleonCritter.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/ChameleonCritter.java)
+
+ChameleonRunner是一个运行容器可以生成有chameleon critters的grid
+
+[ChameleonRunner.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/ChameleonRunner.java)
+
+**代码片：**
+Method processActors
+
+```java
+
+
+public void processActors(ArrayList<Actor> actors) {
+        int n = actors.size();
+        // if the list of actors to process is empty
+        // the color while darken.
+        if (n == 0) {
+            // same code as in the Flower class
+            Color c = getColor();
+            int red = (int) (c.getRed() * (1 - DARKENING_FACTOR));
+            int green = (int) (c.getGreen() * (1 - DARKENING_FACTOR));
+            int blue = (int) (c.getBlue() * (1 - DARKENING_FACTOR));
+            setColor(new Color(red, green, blue));
+            return;
+        }
+        int r = (int) (Math.random() * n);
+
+        Actor other = actors.get(r);
+        setColor(other.getColor());
+    }
+
+```
+
+
+
+##### ChameleonKid
+
+2.编写一个以ChameleonCritter为基类的ChameleonKid类来扩展上一题里的ChemeleonCritter类。ChameleonKid把它的颜色变为前面或后面一个actors的颜色。如果这两处都没有actors，那么ChameleonKid就会像ChameleonCritter一样变暗。
+**代码传送门：**[ChameleonKid.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/ChameleonKid.java)
+ChameleonKidRunner可以生成ChameleonKid的网格世界
+[ChameleonKidRunner.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/ChameleonKidRunner.java)
+
+**代码片：**
+Class ChameleonKid
+```java
+
+public class ChameleonKid extends ChameleonCritter {
+
+    /**
+     * @return the actors that located in the front or behind of the critter.
+     */
+    @Override
+    public ArrayList<Actor> getActors() {
+        ArrayList<Actor> res = new ArrayList<>();
+        ArrayList<Actor> neighbors = getGrid().getNeighbors(getLocation());
+        int dir = getDirection();
+        Location front = getLocation().getAdjacentLocation(dir);
+        Location back = getLocation().getAdjacentLocation(dir + 180);
+        for (Actor a : neighbors) {
+            if (a.getLocation().equals(front) || a.getLocation().equals(back)) {
+                res.add(a);
+            }
+        }
+        return res;
+    }
+
+}
+
+```
+
+##### RockHound
+
+
+3.编写一个Critter的扩展类RockHound。RockHound让actors以像Critter一样的方式被处理。它将从grid中删除该列表中的所有Rocks。RockHound像Critter一样移动。
+
+
+
+**代码传送门：**
+
+[RockHound.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/RockHound.java)
+
+RockHoundRunner可以生成RockHound的网格世界
+
+[RockHoundRunner.java ](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/RockHoundRunner.java)
+
+**代码片：**
+Class RockHound 
+
+```java
+
+
+public class RockHound extends Critter {
+    /**
+     * The method to process the actors. Remove the rocks in the list.
+     * @param actors the list of actors to be processed.
+     */
+    @Override
+    public void processActors(ArrayList<Actor> actors) {
+        // remove actors that are rocks
+        for (Actor a : actors) {
+            if (a instanceof Rock) {
+                a.removeSelfFromGrid();
+            }
+        }
+    }
+}
+
+
+```
+
+##### DancingBug
+
+4.创建一个Critter的扩展类BlusterCritter。一个BlusterCritter看向它当前位置两步内的所有地点。（对于不靠近网格边缘的BlusterCritter，看向的地点有24个）。它计算了这些地点的Critters数量。如果少于c，BlusterCritter的颜色会变得更亮（颜色值增加）。如果有c或更多的动物，蓝色动物的颜色会变暗（颜色值会减少）。其中，c是一个表示小动物的courage的值，应该在构造函数中被设置。
+
+
+**代码传送门：**
+
+[BlusterCritter.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/BlusterCritter.java)
+
+BlusterRunner可以生成DancingBug的网格世界
+
+[BlusterRunner.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/BlusterRunner.java)
+
+**代码片：**
+Class BlusterCritter
+
+```java
+
+public class BlusterCritter extends Critter {
+
+    static final double DARKENING_FACTOR = 0.05;
+    private final int courage;
+
+    public BlusterCritter(int c) {
+        super();
+        courage = c;
+    }
+
+    /**
+     * @return the actors within two steps of its current location.
+     */
+    @Override
+    public ArrayList<Actor> getActors() {
+        ArrayList<Actor> actors = new ArrayList<>();
+        Location loc = getLocation();
+        for (int r = loc.getRow() - 2; r < loc.getRow() + 3; r++) {
+            for (int c = loc.getCol() - 2; c < loc.getCol() + 3; c++) {
+                Location tmpLoc = new Location(r, c);
+                if (getGrid().isValid(tmpLoc)) {
+                    Actor a = getGrid().get(tmpLoc);
+                    if (a != null && a != this) {
+                        actors.add(a);
+                    }
+                }
+            }
+        }
+        return actors;
+    }
+
+    /**
+     * The method to process the actors.
+     * <p> if the number of actors is more than c, bright the color, and if otherwise, darken it.</p>
+     *
+     * @param actors the actors to be processed
+     */
+    @Override
+    public void processActors(ArrayList<Actor> actors) {
+        int n = actors.size();
+        if (n < courage) {
+            brighten();
+        } else {
+            darken();
+        }
+    }
+
+    /**
+     * brighten the color of the critter
+     */
+    private void brighten() {
+        Color c = getColor();
+        int red = (int) (c.getRed() * (1 + DARKENING_FACTOR) > 255 ? 255 : c.getRed() * (1 + DARKENING_FACTOR));
+        int green = (int) (c.getGreen() * (1 + DARKENING_FACTOR) > 255 ? 255 : c.getGreen() * (1 + DARKENING_FACTOR));
+        int blue = (int) (c.getBlue() * (1 + DARKENING_FACTOR) > 255 ? 255 : c.getBlue() * (1 + DARKENING_FACTOR));
+        setColor(new Color(red, green, blue));
+    }
+
+
+    /**
+     * Repeat the codes. I want to make a method to do this.
+     * <p> darken the critter </p>
+     */
+    private void darken() {
+        Color c = getColor();
+        int red = (int) (c.getRed() * (1 - DARKENING_FACTOR));
+        int green = (int) (c.getGreen() * (1 - DARKENING_FACTOR));
+        int blue = (int) (c.getBlue() * (1 - DARKENING_FACTOR));
+        setColor(new Color(red, green, blue));
+    }
+}
+
+```
+
+
+##### QuickCrab
+
+5.创建一个CrabCritter的扩展类QuickCrab。一个QuickCrab处理行为的方式和CrabCritter一样。如果QuickCrab的左右两格都是空的，则QuickCrab随机移动到其中一格。否则，QuickCrab就像CrabCritter一样移动。
+**代码传送门：**[QuickCrab.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/QuickCrab.java)
+
+QuickCrabRunner可以生成QuickCrab的网格世界
+
+[QuickCrabRunner.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/QuickCrabRunner.java)
+
+**代码片：**
+Class QuickCrab
+```java
+
+public class QuickCrab extends CrabCritter {
+    /**
+     * @return the locations to move to.
+     */
+    @Override
+    public ArrayList<Location> getMoveLocations() {
+        ArrayList<Location> locs = new ArrayList<>();
+        int[] dirs = {Location.LEFT, Location.RIGHT};
+        Grid<Actor> gr = getGrid();
+
+        for (int dir : dirs) {
+            Location loc = getLocation().getAdjacentLocation(getDirection() + dir);
+            if (gr.isValid(loc) && gr.get(loc) == null) {
+                Location next = loc.getAdjacentLocation(getDirection() + dir);
+                if (gr.isValid(next) && gr.get(next) == null) {
+                    locs.add(next);
+                }
+            }
+        }
+
+        return locs;
+    }
+}
+
+```
+
+##### KingCrab
+
+
+6.创建一个CrabCritter的扩展类KingCrab。KingCrab让actors像CrabCritter一样处理actors。KingCrab使每个actor的一个位置移动到远离KingCrab的地方。如果actor不能离开，KingCrab就会把它从网格中移除。当KingCrab完成了对actors的处理后，它就像CrabCritter一样移动。
+
+
+
+**代码传送门：**
+
+[KingCrab.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/KingCrab.java)
+
+KingCrabRunner可以生成KingCrab的网格世界
+
+[KingCrabRunner.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/critters/KingCrabRunner.java)
+
+**代码片：**
+Class KingCrab
+
+```java
+
+
+public class KingCrab extends CrabCritter {
+    /**
+     * the method to process the actors. <br />
+     *
+     * @param actors the actors to be processed
+     */
+    @Override
+    public void processActors(ArrayList<Actor> actors) {
+        Grid<Actor> gr = getGrid();
+        Location loc = getLocation();
+        for (Actor a : actors) {
+            Location aLoc = a.getLocation();
+            int dir = loc.getDirectionToward(aLoc);
+            Location next = aLoc.getAdjacentLocation(dir);
+            if (gr.isValid(next) && gr.get(next) == null) {
+                a.moveTo(next);
+            } else {
+                a.removeSelfFromGrid();
+            }
+        }
+    }
+}
+
+```
+
+
+### Part 5
+#### Exercises
+
+##### S
+
+1.假设一个程序需要一个非常大的有界网格，它包含很少的对象，并且程序经常调用getOccupiedLocations方法（例如，ActorWorld）。创建一个使用“稀疏数组”实现的SparseBoundedGrid类。您的解决方案不需要是一个通用类；您可以只需存储Object类型的使用者。
+
+“稀疏数组”是一个链接表的数组列表。每个链表条目同时包含一个网格占用者和一个列索引。数组列表中的每个条目都是一个链接列表，但如果该行为空，则为null。
+
+**代码传送门：**  
+[SparseBoundedGrid.java](https://github.com/NorthSecond/GridWorld/blob/main/framework/info/gridworld/grid/SparseBoundedGrid.java)
+[SparseBoundedGrid2.java](https://github.com/NorthSecond/GridWorld/blob/main/framework/info/gridworld/grid/SparseBoundedGrid2.java)
+[SparseBoundedGrid3.java](https://github.com/NorthSecond/GridWorld/blob/main/framework/info/gridworld/grid/SparseBoundedGrid3.java)
+
+SparseBoundedGridRunner运行时你可以选择上述三种不同实现方法的网格类
+
+[SparseBoundedGridRunner.java](https://github.com/NorthSecond/GridWorld/blob/main/framework/info/gridworld/grid/SparseBoundedGridRunner.java)
+
+**代码片：**
+Class SparseBoundedGrid3
+
+```java
+
+
+public class SparseBoundedGrid3<E> extends AbstractGrid<E> {
+    private TreeMap<Location, E> occupantMap;
+    private final int rows;
+    private final int cols;
+
+    public SparseBoundedGrid3(int r, int c) {
+        if (r <= 0)
+            throw new IllegalArgumentException("rows <= 0");
+        if (c <= 0)
+            throw new IllegalArgumentException("cols <= 0");
+        rows = r;
+        cols = c;
+        occupantMap = new TreeMap<>();
+    }
+
+    @Override
+    public int getNumRows() {
+        return rows;
+    }
+
+    @Override
+    public int getNumCols() {
+        return cols;
+    }
+
+    @Override
+    public boolean isValid(Location loc) {
+        return (0 <= loc.getRow()) && (loc.getRow() < getNumRows())
+                && (0 <= loc.getCol()) && (loc.getCol() < getNumCols());
+    }
+
+    @Override
+    public ArrayList<Location> getOccupiedLocations() {
+        return new ArrayList<>(occupantMap.keySet());
+    }
+
+    @Override
+    public E get(Location loc) {
+        if (loc == null)
+            throw new NullPointerException("loc == null");
+        return occupantMap.get(loc);
+    }
+
+    @Override
+    public E put(Location loc, E obj) {
+        if (loc == null)
+            throw new NullPointerException("loc == null");
+        if (obj == null)
+            throw new NullPointerException("obj == null");
+        return occupantMap.put(loc, obj);
+    }
+
+    @Override
+    public E remove(Location loc) {
+        if (loc == null)
+            throw new NullPointerException("loc == null");
+        return occupantMap.remove(loc);
+    }
+}
+
+```
+
+##### UnboundedGrid
+
+2.考虑使用HashMap或TreeMap来实现SparseBoundedGrid。如何使用UnboundedGrid类来完成此任务？哪些UnboundedGrid的方法可以使用而不改变？填写下面的图表来比较SparseBoundedGrid的每个实现的预期Big-oh效率。
+
+**代码传送门：**
+[UnboundedGrid2.java](https://github.com/NorthSecond/GridWorld/blob/main/framework/info/gridworld/grid/UnboundedGrid2.java)
+
+**代码片：**
+Class UnboundedGrid2
+
+```java
+
+public class UnboundedGrid2<E> extends AbstractGrid<E> {
+    private Object[][] occupantArray;
+    private final int size = 16;
+
+    public UnboundedGrid2() {
+        occupantArray = new Object[size][size];
+    }
+
+    @Override
+    public int getNumRows() {
+        return -1;
+    }
+
+    @Override
+    public int getNumCols() {
+        return -1;
+    }
+
+    @Override
+    public boolean isValid(Location loc) {
+        return loc != null;
+    }
+
+    @Override
+    public ArrayList<Location> getOccupiedLocations() {
+        ArrayList<Location> ans = new ArrayList<>();
+
+        for (int i = 0; i < occupantArray.length; i++) {
+            for (int j = 0; j < occupantArray[i].length; j++) {
+                Location loc = new Location(i, j);
+                if (get(loc) != null) {
+                    ans.add(loc);
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    @Override
+    public E get(Location loc) {
+        if (!isValid(loc)) {
+            throw new IllegalArgumentException("Location " + loc + " is not valid");
+        }
+
+        if (loc.getRow() >= occupantArray.length || loc.getCol() >= occupantArray[0].length) {
+            return null;
+        }
+
+        return (E) occupantArray[loc.getRow()][loc.getCol()];
+    }
+
+    @Override
+    public E put(Location loc, E obj) {
+        if (!isValid(loc)) {
+            throw new IllegalArgumentException("Location " + loc + " is not valid");
+        }
+
+        if (obj == null) {
+            throw new NullPointerException("obj == null");
+        }
+
+        if (loc.getRow() >= occupantArray.length || loc.getCol() >= occupantArray[0].length) {
+            changeSize(loc);
+        }
+
+        E old = get(loc);
+        occupantArray[loc.getRow()][loc.getCol()] = obj;
+        return old;
+    }
+
+    private void changeSize(Location loc){
+        int pSize = Math.max(loc.getRow(), loc.getCol()) + 1;
+        // double both array bounds until they are large enough
+        int newSize = size;
+        while (newSize < pSize) {
+            newSize <<= 1;
+        }
+
+        Object[][] newArray = new Object[newSize][newSize];
+
+        // There seems to be a problem with the way it is written.
+//        System.arraycopy(occupantArray, 0, newArray, 0, occupantArray.length);
+
+        for (int i = 0; i < newSize; i++) {
+            System.arraycopy(occupantArray[i], 0, newArray[i], 0, newSize);
+        }
+
+        occupantArray = newArray;
+    }
+
+    @Override
+    public E remove(Location loc) {
+        if (!isValid(loc)) {
+            throw new IllegalArgumentException("Location " + loc + " is not valid");
+        }
+
+        if (loc.getRow() >= occupantArray.length || loc.getCol() >= occupantArray[0].length) {
+            return null;
+        }
+
+        E old = get(loc);
+        occupantArray[loc.getRow()][loc.getCol()] = null;
+        return old;
+    }
+}
+
+```
+
+| Methods | SparseGridNode Version | LinkedList<OccupantInCol> Version | HashMap Version | TreeMap Version |
+|---|---|---|---|---|
+|getNeighbors	|O(c)	|O(c)	|O(1)	|O(logn)|
+|getEmptyAdjacentLocations	|O(c)	|O(c)	|O(1)	|O(logn)|
+|getOccupiedAdjacentLocations	|O(c)	|O(c)	|O(1)	|O(logn)|
+|getOccupiedLocations	|O(c+n)	|O(r+n)	|O(n)	|O(n)|
+|get	|O(c)	|O(c)	|O(1)	|O(logn)|
+|put	|O(c)	|O(c)	|O(1)	|O(logn)|
+|remove	|O(c)	|O(c)	|O(1)	|O(logn)|
+
+
+
+3.考虑一个无界网格的实现，其中所有有效的位置都有非负的行值和列值。构造函数分配一个16 x 16的数组。当调用具有当前数组边界之外的行或列索引的put方法时，加倍两个数组边界，直到它们足够大，用这些边界构造一个新的正方形数组，并将现有的使用者放置到新的数组中。使用此数据结构实现网格接口指定的方法。get方法的Big-oh效率是多少？当行和列索引值在当前数组范围内时，put方法的效率如何？需要调整阵列大小时的效率如何？
+
+- get方法的Big-Oh效率是O(1)
+- 行列索引值在当前数组范围内时，put方法的效率是O(1)
+- 当需要调整阵列大小时，put方法的效率是O(n^2)，n是数组size。
