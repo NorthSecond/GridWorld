@@ -1,8 +1,6 @@
 ## 目录
 
-[TOC]
-
-* GridWorld简介
+* [GridWorld简介](#GridWorld简介)
 * 正文部分
     * Part 1
       * Exercises 1
