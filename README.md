@@ -532,9 +532,7 @@ public class Jumper extends Bug {
 
 ```
 
-**测试截图**
 
-![img_5.png](img_5.png)
 
 **测试代码片（JumperTest）**
 
