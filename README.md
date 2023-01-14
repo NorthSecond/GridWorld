@@ -437,9 +437,7 @@ JumperTest是对Jumper类的测试代码
 [JumperTest.java](https://github.com/NorthSecond/GridWorld/blob/main/projects/Jumper/JumperTest.java)
 
 
-**运行截图**
 
-![img_4.png](img_4.png)
 
 ---
 **Jumper代码片**
