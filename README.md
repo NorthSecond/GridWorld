@@ -112,7 +112,7 @@ CircleBugRunner是一个运行容器可以生成有circlebug的grid
 
 **运行截图**
 
-![img.png](img.png)
+![Image text](/image/circle.png)
 
 **代码片：**
 Class CircleBug
@@ -161,7 +161,7 @@ SpiralBugRunner可以生成SpiralBug的网格世界
 
 **运行截图**
 
-![img_1.png](img_1.png)
+![Image text](/image/spiral.png)
 
 **代码片：**
 Class SpiralBug
@@ -221,7 +221,7 @@ ZBugRunner可以生成ZBug的网格世界
 
 **运行截图**
 
-![img_2.png](img_2.png)
+![Image text](/image/zbug.png)
 
 **代码片：**
 Class ZBug
@@ -294,7 +294,7 @@ DanceBugRunner可以生成DancingBug的网格世界
 
 **运行截图**
 
-![img_3.png](img_3.png)
+![Image text](/image/dance.png)
 
 **代码片：**
 Class DancingBug
