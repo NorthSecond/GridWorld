@@ -63,16 +63,16 @@
 
 
 | Degrees | Compass Direction |
-|---|---|
-0 | North
-45|NorthEast
-90|East
-135|SouthEast
-180|South
-225|SouthWest
-270|West
-315|NorthWest
-360|North
+|---------|-------------------|
+| 0       | North             |
+| 45      | NorthEast         |
+| 90      | East              |
+| 135     | SouthEast         |
+| 180     | South             |
+| 225     | SouthWest         |
+| 270     | West              |
+| 315     | NorthWest         |
+| 360     | North             |
 
 2.使用moveTo方法将Bug移动到不同的位置。你可以向哪个方向移动它？你能把它移多远？如果你将bug移出网格会发生什么？
 
@@ -365,7 +365,7 @@ public class DancingBug extends Bug {
 
 ### Part 3
 ****
-####Group Activity
+#### Group Activity
 
 * 小组完成一个名为 **Jumper** 的类 ， 它可以让actor每次移动向前移动两个单元格。
 当遇到岩石和花时可以跳过，跳跃时不会留下任何东西
